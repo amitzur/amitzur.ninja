@@ -26,8 +26,8 @@
     </style>
 </head>
 <body style="margin:0">
-<script src="https://rawgit.com/amitzur/ui-infra/master/ui-infra.js"></script>
-<!--<script src="../ui-infra/ui-infra.js"></script>-->
+<!--<script src="https://rawgit.com/amitzur/ui-infra/master/ui-infra.js"></script>-->
+<script src="../ui-infra/ui-infra.js"></script>
 <script>
 
     function def(obj, prop, val) {
@@ -134,59 +134,60 @@
         }
     }
     
-    function redraw() {
-        grid.reset();
-        grid._draw();
-        var now = Date.now(), fps = now - lastFrame; 
+//    function redraw() {
+//        grid.reset();
+//        grid._draw();
+//        var now = Date.now(), fps = now - lastFrame; 
 //        if (fps < 128) {
-            lastFrame = now;
+//            lastFrame = now;
 //            requestAnimationFrame(redraw);
 //        } else {
 //            console.log("cancelling requestAnimationFrame");
 //        }
-    }
-    var lastFrame = Date.now();
-    redraw();
+//    }
+//    var lastFrame = Date.now();
+//    redraw();
     
     window.on("resize", function() {
         grid.option("w", window.innerWidth-2);
         grid.option("h", window.innerHeight-2);
-        redraw();
+        grid.reset();
+        grid._draw();
     }, false);
     
-    window.on("contextmenu", function(e) { 
-        e.preventDefault();
-    }, false);
-    
-    var spacingRange = [5,100];
-    
-    Delta.start();
-    document.on("deltaStart", function(eStart) {
-        function onDelta(e) {
-            var newSpacing = startSpacing - ratio * (e.detail.y - refY);
-//            console.log("newSpacing=" + newSpacing);
-            if (newSpacing >= spacingRange[0] && newSpacing <= spacingRange[1]) {
-                grid.option("spacing", newSpacing);
-            } else if (newSpacing < spacingRange[0]) {
-                refY = e.detail.y;
-                startSpacing = spacingRange[0];
-            }
-            
-            if (e.detail.e.type === "touchmove" && (_startSpacing - spacingRange[0] < 0.5) && newSpacing < spacingRange[0]) {
-                console.log("not blocking refresh on mobile");
-            }
-            else e.detail.e.preventDefault();
-        }
-        var _startSpacing = startSpacing = grid.option("spacing"),
-            refY = 0,
-            ratio = (spacingRange[1] - spacingRange[0]) / window.innerHeight;
-        console.log("startSpacing=" + startSpacing);
-        
-        document.on("delta", onDelta);
-        document.on("deltaEnd", function() {
-            document.off("delta", onDelta);
-        })
-    });
+//    window.on("contextmenu", function(e) { 
+//        e.preventDefault();
+//    }, false);
+//    
+//    var spacingRange = [5,100];
+//    
+//    Delta.start();
+//    document.on("deltaStart", function(eStart) {
+//        function onDelta(e) {
+//            var newSpacing = startSpacing - ratio * (e.detail.y - refY);
+////            console.log("newSpacing=" + newSpacing);
+//            if (newSpacing >= spacingRange[0] && newSpacing <= spacingRange[1]) {
+//                grid.option("spacing", newSpacing);
+//            } else if (newSpacing < spacingRange[0]) {
+//                refY = e.detail.y;
+//                startSpacing = spacingRange[0];
+//            }
+//            
+//            if (e.detail.e.type === "touchmove" && (_startSpacing - spacingRange[0] < 0.5) && newSpacing < spacingRange[0]) {
+//                console.log("not blocking refresh on mobile");
+//            }
+//            else e.detail.e.preventDefault();
+//        }
+//        var _startSpacing = startSpacing = grid.option("spacing"),
+//            refY = 0,
+//            ratio = (spacingRange[1] - spacingRange[0]) / window.innerHeight;
+//        console.log("startSpacing=" + startSpacing);
+//        
+//        document.on("delta", onDelta);
+//        document.on("deltaEnd", function() {
+//            document.off("delta", onDelta);
+//        })
+//    });
     
     
 </script>
