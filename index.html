@@ -1,159 +1,39 @@
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Grid in Canvas</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1.0,maximum-scale=1.0">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="application-name" content="Grid">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="white">
-    <meta name="apple-mobile-web-app-title" content="Grid">
-    <meta name="theme-color" content="#18B6F8">
-    <link rel="manifest" href="grid2manifest.json">
-    <style>
-    body {
-        margin: 0;
-        -moz-user-select: none;
-        -webkit-user-select: none;
-        user-select: none;
-    }
-    canvas{
-        display:block;
-        /*border: 1px solid red;*/
-        /*box-sizing: border-box;*/
-    }
-    </style>
-</head>
-<body style="margin:0">
-<!--<script src="https://rawgit.com/amitzur/ui-infra/master/ui-infra.js"></script>-->
-<script src="../ui-infra/ui-infra.js"></script>
+---
+layout: minimal
+---
+<link rel="stylesheet" href="css/index.css"/>
+    
+
+<section class="stretch gutter" style="overflow:auto">
+    <section class="objective hbox v-center">
+        <img class="avatar item" src="https://avatars3.githubusercontent.com/u/394320?v=3&s=460" alt=""/>
+        <div>
+            <h1>Amit Zur</h1>
+            <h4>Develop for the fun of it.</h4>
+        </div>
+    </section>
+    <section>
+        <ul>
+            <li>I push javascript code at <a href="capriza.com">Capriza</a></li>
+            <li>I love open source. Currently working on contributing to mozilla. In the past I was active at <a href="http://hasadna.org.il">Hasadna</a>.</li>
+            <li>I would love to start a blog.</li>
+            <li>Occasionally I give talks. Last one was about mobile web development. [ <a
+                        href="http://mobileweb.jit.su">Slides</a> | <a href="https://www.youtube.com/watch?v=aFL33q2U7eM">Video (hebrew)</a> |
+                <a href="http://html5devconf.com/speakers/amit_zur.html">HTML5DevConf</a> ]</li>
+            <li>Sometimes I surf the web. And just like everyone else, <a href="bookmarks">I find awesome stuff and amazing people.</a>
+                <div data-content="links"></div>
+            </li>
+        </ul>
+    </section>
+    <div class="hbox v-center">
+        <img style="height:44px;" src="http://icons.iconarchive.com/icons/raindropmemory/harmonia-pastelis/256/hp-in-progress-icon.png"/>
+        <h4>Still working on this site</h4>
+    </div>
+</section>
+
+<script src="js/ui-infra.js"></script>
+<script src="js/grid.js"></script>
 <script>
-
-    function def(obj, prop, val) {
-        obj[prop] = (obj[prop] || val);
-    }
-    
-    function Grid(options) {
-
-        options = (options || {});
-        def(options, "w", 500);
-        def(options, "h", 500);
-        def(options, "spacing", 5);
-        def(options, "offsetX", 1);
-        def(options, "offsetY", 1);
-        var w = options.w, h = options.h, spacing = options.spacing;
-
-        var canvas = document.createElement("canvas"),
-            ctx = canvas.getContext("2d");
-        
-        this.canvas = canvas;
-        this.ctx = ctx;
-        this.options = options;
-        
-        this.cycleX = spacing*2 * 5;
-        this.cycleY = spacing*2 * 5;
-
-        document.body.appendChild(canvas);
-
-        this._draw();
-        return this;
-    }
-    
-    Grid.prototype = {
-        _draw: function() {
-            var ctx = this.ctx, canvas = this.canvas;
-            var w = this.options.w, h = this.options.h, spacing = this.options.spacing,
-                offsetX = this.options.offsetX % this.cycleX, offsetY = this.options.offsetY % this.cycleY;
-
-            canvas.width = w*2+2;
-            canvas.height= h*2+2;
-
-            canvas.style.width = w + 1 + "px";
-            canvas.style.height = h + 1 + "px";
-
-            ctx.strokeStyle = '#18B6F8';
-
-            for (var i=offsetX,ii=w*2+1;i<=ii;i+=spacing*2) {
-                ctx.lineWidth = Math.round((i-1)/(spacing*2)) % 5 ? 1 : 2;
-                ctx.beginPath();
-                ctx.moveTo(i,1);
-                ctx.lineTo(i,h*2+1);
-                ctx.stroke();
-            }
-
-            for (var i=offsetY,ii=h*2+1;i<=ii;i+=spacing*2) {
-                ctx.lineWidth = Math.round((i-1)/(spacing*2)) % 5 ? 1 : 2;
-                ctx.beginPath();
-                ctx.moveTo(1,i);
-                ctx.lineTo(w*2+1,i);
-                ctx.stroke();
-            }
-        },
-        reset: function() {
-            this.ctx.clearRect(0,0,this.canvas.width,this.canvas.height);
-        },
-        option: function(prop, value) {
-            if (arguments.length === 1) return this.options[prop];
-            this.options[prop] = value;
-        }
-    };
-    
-    log(window.innerWidth + "x" + window.innerHeight);
-    
-    var grid = new Grid({
-        w: window.innerWidth-2,
-        h: window.innerHeight-2,
-        spacing: 5
-    });
-    
-    function refresh() {
-        grid.reset();
-        grid._draw.apply(grid, arguments);
-    }
-    
-    function move() {
-        animate(function() {
-            grid.options.offsetX++;
-        });
-    }
-    
-    function animate(action, timeout) {
-        function doAnimate() {
-            action();
-            grid.reset();
-            grid._draw();
-            cancelId = requestAnimationFrame(doAnimate);
-        }
-        var cancelId;
-        doAnimate();
-        if (timeout !== null) {
-            setTimeout(function() {
-                cancelAnimationFrame(cancelId);
-            }, timeout || 5000);
-        }
-    }
-    
-//    function redraw() {
-//        grid.reset();
-//        grid._draw();
-//        var now = Date.now(), fps = now - lastFrame; 
-//        if (fps < 128) {
-//            lastFrame = now;
-//            requestAnimationFrame(redraw);
-//        } else {
-//            console.log("cancelling requestAnimationFrame");
-//        }
-//    }
-//    var lastFrame = Date.now();
-//    redraw();
-    
-    window.on("resize", function() {
-        grid.option("w", window.innerWidth-2);
-        grid.option("h", window.innerHeight-2);
-        grid.reset();
-        grid._draw();
-    }, false);
     
 //    window.on("contextmenu", function(e) { 
 //        e.preventDefault();
@@ -191,5 +71,3 @@
     
     
 </script>
-</body>
-</html>
