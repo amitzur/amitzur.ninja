@@ -1,73 +1,37 @@
 ---
-layout: minimal
+layout: default
+title: Home
 ---
-<link rel="stylesheet" href="css/index.css"/>
-    
 
-<section class="stretch gutter" style="overflow:auto">
-    <section class="objective hbox v-center">
-        <img class="avatar item" src="https://avatars3.githubusercontent.com/u/394320?v=3&s=460" alt=""/>
-        <div>
-            <h1>Amit Zur</h1>
-            <h4>Develop for the fun of it.</h4>
-        </div>
-    </section>
-    <section>
-        <ul>
-            <li>I push javascript code at <a href="http://www.capriza.com">Capriza</a></li>
-            <li>I love open source. Currently working on contributing to mozilla. In the past I was active at <a href="http://hasadna.org.il">Hasadna</a>.</li>
-            <li>I would love to start a blog.</li>
-            <li>Occasionally I give talks. Last one was about mobile web development. [ <a
-                        href="http://mobileweb.jit.su">Slides</a> | <a href="https://www.youtube.com/watch?v=aFL33q2U7eM">Video (hebrew)</a> |
-                <a href="http://html5devconf.com/speakers/amit_zur.html">HTML5DevConf</a> ]</li>
-            <!--<li>Sometimes I surf the web. And just like everyone else, <a href="bookmarks">I find awesome stuff and amazing people.</a>-->
-                <!--<div data-content="links"></div>-->
-            <!--</li>-->
-        </ul>
-    </section>
-    <div class="hbox v-center">
-        <img style="height:44px;" src="http://icons.iconarchive.com/icons/raindropmemory/harmonia-pastelis/256/hp-in-progress-icon.png"/>
-        <h4>Still working on this site</h4>
-    </div>
-</section>
+<div class="posts">
+  {% for post in paginator.posts %}
+  <div class="post">
+    <h1 class="post-title">
+      <a href="{{ post.url }}">
+        {{ post.title }}
+      </a>
+    </h1>
 
-<script src="js/ui-infra.js"></script>
-<script src="js/grid.js"></script>
-<script>
-    
-//    window.on("contextmenu", function(e) { 
-//        e.preventDefault();
-//    }, false);
-//    
-//    var spacingRange = [5,100];
-//    
-//    Delta.start();
-//    document.on("deltaStart", function(eStart) {
-//        function onDelta(e) {
-//            var newSpacing = startSpacing - ratio * (e.detail.y - refY);
-////            console.log("newSpacing=" + newSpacing);
-//            if (newSpacing >= spacingRange[0] && newSpacing <= spacingRange[1]) {
-//                grid.option("spacing", newSpacing);
-//            } else if (newSpacing < spacingRange[0]) {
-//                refY = e.detail.y;
-//                startSpacing = spacingRange[0];
-//            }
-//            
-//            if (e.detail.e.type === "touchmove" && (_startSpacing - spacingRange[0] < 0.5) && newSpacing < spacingRange[0]) {
-//                console.log("not blocking refresh on mobile");
-//            }
-//            else e.detail.e.preventDefault();
-//        }
-//        var _startSpacing = startSpacing = grid.option("spacing"),
-//            refY = 0,
-//            ratio = (spacingRange[1] - spacingRange[0]) / window.innerHeight;
-//        console.log("startSpacing=" + startSpacing);
-//        
-//        document.on("delta", onDelta);
-//        document.on("deltaEnd", function() {
-//            document.off("delta", onDelta);
-//        })
-//    });
-    
-    
-</script>
+    <span class="post-date">{{ post.date | date_to_string }}</span>
+
+    {{ post.content }}
+  </div>
+  {% endfor %}
+</div>
+
+<div class="pagination">
+  {% if paginator.next_page %}
+    <a class="pagination-item older" href="{{ site.baseurl }}page{{paginator.next_page}}">Older</a>
+  {% else %}
+    <span class="pagination-item older">Older</span>
+  {% endif %}
+  {% if paginator.previous_page %}
+    {% if paginator.page == 2 %}
+      <a class="pagination-item newer" href="{{ site.baseurl }}">Newer</a>
+    {% else %}
+      <a class="pagination-item newer" href="{{ site.baseurl }}page{{paginator.previous_page}}">Newer</a>
+    {% endif %}
+  {% else %}
+    <span class="pagination-item newer">Newer</span>
+  {% endif %}
+</div>

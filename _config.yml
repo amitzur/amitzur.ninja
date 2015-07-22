@@ -1,16 +1,29 @@
-# Site settings
-title: Amit Zur | Ninja
-email: zur.amit@gmail.com
-description: > # this means to ignore newlines until "baseurl:"
-  Write an awesome description for your new site here. You can edit this
-  line in _config.yml. It will appear in your document head meta (for
-  Google search results) and in your feed.xml site description.
-baseurl: ""
-url: "http://amitzur.ninja"
-twitter_username: amitzur
-github_username:  amitzur
+# Dependencies
+markdown:         redcarpet
+highlighter:      pygments
 
-# Build settings
-markdown: kramdown
+# Permalinks
+permalink:        pretty
+relative_permalinks: true
+
+# Setup
+title:            Amit Zur
+tagline:          'A personal blog'
+description:      'Coding for the fun of it'
+url:              http://hyde.getpoole.com
+baseurl:          /
+
+author:
+  name:           'Mark Otto'
+  url:            https://twitter.com/mdo
+
+paginate:         5
+
+# Custom vars
+version:          2.1.0
+
+github:
+  repo:           https://github.com/poole/hyde
+
 #sass:
 #  style: :compressed
