@@ -263,6 +263,10 @@ tbody tr:nth-child(odd) th {
   font-weight: 300;
 }
 
+.copyright {
+  font-size: smaller;
+}
+
 
 /*
  * Messages

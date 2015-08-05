@@ -9,7 +9,7 @@ relative_permalinks: true
 # Setup
 title:            Amit Zur
 tagline:          'A personal blog'
-description:      'Coding for the fun of it'
+description:      'Pixels, bits and mindfulness'
 url:              http://hyde.getpoole.com
 baseurl:          /
 
