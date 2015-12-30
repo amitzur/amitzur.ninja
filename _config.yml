@@ -4,18 +4,17 @@ highlighter:      pygments
 
 # Permalinks
 permalink:        pretty
-relative_permalinks: true
 
 # Setup
 title:            Amit Zur
 tagline:          'A personal blog'
 description:      'Pixels, bits and mindfulness'
-url:              http://hyde.getpoole.com
+url:              http://amitzur.ninja
 baseurl:          /
 
 author:
-  name:           'Mark Otto'
-  url:            https://twitter.com/mdo
+  name:           'Amit Zur'
+  url:            https://amitzur.ninja
 
 paginate:         5
 
@@ -23,7 +22,7 @@ paginate:         5
 version:          2.1.0
 
 github:
-  repo:           https://github.com/poole/hyde
+  repo:           https://github.com/amitzur/amitzur.ninja
 
 #sass:
 #  style: :compressed
