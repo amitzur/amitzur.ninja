@@ -1,0 +1,26 @@
+---
+layout: minimal
+title: Grandpa Yanyu
+permalink: /yanyu/
+---
+<style>
+  html, body { margin: 0; height: 100%; background: #f7f7f7; }
+  canvas { display: block; background: white; }
+  body {
+    background: url(/public/78166.jpg) no-repeat right -170px top -160px;
+    background-size: auto 140%;
+  }
+
+  @keyframes panorama {
+    10% {
+      background-size: auto 150%;
+      background-position: 10%;
+    }
+
+    to {
+      background-position: 100%;
+    }
+  }
+</style>
+<canvas></canvas>
+<script src="/public/js/yanyu.js"></script>

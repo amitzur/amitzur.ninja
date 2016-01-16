@@ -1,0 +1,136 @@
+---
+layout: minimal
+title: Location of a Rectangle
+permalink: /rect/
+---
+<p style='width:700px;text-align:justify;'>
+    a rectangle whose left and right sides are two thirds as long as its top and bottom sides
+
+    and whose left side is located where a line drawn from a point halfway between the
+
+    midpoint of the top side of the square and the upper left corner to a point halfway
+
+    between a point halfway between the center of the square and the lower left corner
+
+    and the midpoint of the bottom side is crossed by two lines, the first of which is drawn
+
+    from a point halfway between the midpoint of the left side and the upper left corner to
+
+    a point halfway between the point halfway between the center of the square and the
+
+    upper right corner and the midpoint of the right side, the second line from a point
+
+    halfway between the point where the first line ends and a point halfway between the
+
+    midpoint of the bottom side and the lower right corner to a point halfway between a
+
+    point halfway between the center of the square and the lower left corner and the
+
+    midpoint of the left side
+</p>
+
+<svg version="1.1" baseProfile="full" width="500" height="500" xmlns="http://www.w3.org/2000/svg"></svg>
+
+<script>
+    var STR = {
+        line: function(line, color, width, excludePoint) {
+            var lineStr = '<line x1="' + line[0].x + '" y1="' + line[0].y + '" x2="' + line[1].x + '" y2="' + line[1].y + '" stroke="' + (color || "#000") + '" stroke-width="' + (width || "1") + '" stroke-opacity="0.4"/>';
+            return (excludePoint ? lineStr : STR.point(line[0]) + STR.point(line[1]) + lineStr);
+        },
+        point: function(p, y) {
+            return '<circle cx="' + p.x + '" cy="' + p.y + '" r="2" fill="#ed1c16"/>';
+        },
+        rect: function(x,y,w,h,transform) {
+            return '<rect width="' + w + '" height="' + h + '" fill="transparent" stroke="#000" x="' + x + '" y="' + y + '" transform="' + transform + '"/>';
+        }
+    };
+    function Grid(w) {
+        var svg = document.getElementsByTagName("svg")[0];
+        svg.setAttribute("width", w + 2);
+        svg.setAttribute("height", w + 2);
+
+        var s = "";
+        for (var i= 1,ii=w+1;i<=ii;i+=5) {
+            var strokeW= (i-1)/5 % 5 ? 1 : 2;
+            s += STR.line([{ x: i, y: 1}, {x: i, y: 501}], '#18B6F8', strokeW, true) + STR.line([{x: 1, y: i}, {x: 501, y: i}], "#18B6F8", strokeW, true);
+        }
+
+        svg.innerHTML = s;
+        return svg;
+    }
+
+    function halfway(p1, p2) {
+        return {
+            x : (p1.x + p2.x) / 2,
+            y : (p1.y + p2.y) / 2
+        }
+    }
+
+    function midpoint(side) {
+        switch(side) {
+            case "top": return halfway(TOP_LEFT, TOP_RIGHT);
+            case "left": return halfway(TOP_LEFT, BOTTOM_LEFT);
+            case "right": return halfway(TOP_RIGHT, BOTTOM_RIGHT);
+            case "bottom": return halfway(BOTTOM_LEFT, BOTTOM_RIGHT);
+        }
+    }
+
+    function slope(line) {
+        return (line[1].y - line[0].y) / (line[1].x - line[0].x);
+    }
+
+    function intercept(line) {
+        return line[0].y - slope(line) * line[0].x;
+    }
+
+    function intersect(l1, l2) {
+        var x = (intercept(l1) - intercept(l2)) / (slope(l2) - slope(l1));
+        return {
+            x : x,
+            y : slope(l1) * x + intercept(l1)
+        };
+    }
+
+    function distance(p1,p2) {
+        return Math.sqrt(Math.pow(p1.y - p2.y, 2) + Math.pow(p1.x - p2.x, 2));
+    }
+
+    var size = 500;
+
+    const TOP_LEFT =    { x : 1, y : 1 };
+    const TOP_RIGHT =   { x : 1 + size, y : 1 };
+    const BOTTOM_LEFT = { x : 1 , y : 1 + size };
+    const BOTTOM_RIGHT ={ x : 1 + size, y : 1 + size };
+    const CENTER =      { x : 1 + size/2, y : 1 + size/2 };
+
+    var grid = Grid(size);
+
+    var l1 = [
+        halfway(TOP_LEFT, midpoint("top")),
+        halfway(halfway(CENTER,BOTTOM_LEFT), midpoint("bottom"))
+    ];
+
+    var l2 = [
+        halfway(midpoint("left"), TOP_LEFT),
+        halfway(halfway(CENTER, TOP_RIGHT), midpoint("right"))
+    ];
+
+    var l3 = [
+        halfway(l2[1], halfway(midpoint("bottom"), BOTTOM_RIGHT)),
+        halfway(halfway(CENTER, BOTTOM_LEFT), midpoint("left"))
+    ];
+
+    var r_len_1 = distance(intersect(l1,l2), intersect(l1,l3));
+
+    var r_x1 = intersect(l1,l2).x,
+        r_y1 = intersect(l1,l2).y,
+        angle = Math.atan(1/slope(l1)) * 57.2957795;
+
+    grid.innerHTML += STR.rect(r_x1, r_y1, r_len_1 * 3 / 2, r_len_1, 'rotate(-' + angle + ',' + r_x1 + ',' + r_y1 + ')');
+    grid.innerHTML += STR.line(l1);
+    grid.innerHTML += STR.line(l2);
+    grid.innerHTML += STR.line(l3);
+
+    grid.innerHTML += STR.point(intersect(l1,l2));
+    grid.innerHTML += STR.point(intersect(l1,l3));
+</script>

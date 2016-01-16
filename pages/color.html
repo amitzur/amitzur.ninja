@@ -1,0 +1,94 @@
+---
+layout: minimal
+title: Color Comparison
+permalink: /color/
+---
+<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=PT+Sans:400,400italic,700|Abril+Fatface">
+<style>
+  html,body { height: 100%; margin: 0; }
+  .x { display:inline-block; height:100%; width: 50%; outline: none; box-sizing: border-box; padding: 20px; vertical-align: middle; transition: background-color 200ms; }
+  [contenteditable] { outline: none;border-bottom: 1px solid rgba(0,0,0,0.1);line-height: 36px;margin-bottom: 10px;font-size:24px;}
+</style>
+<script src="https://cdn.rawgit.com/bgrins/TinyColor/master/tinycolor.js"></script>
+<script>
+  ["left", "right"].forEach(function(side, i) {
+    setDefaultValue("color-" + side, (i === 0 ? "greenyellow" : "yellowgreen"));
+    setDefaultValue("color-" + side + "-text", "black");
+
+    var el = window[side + "El"] = document.createElement("div");
+    el.className = "x";
+    el.setAttribute("data-side", side);
+    el.setAttribute("tabindex", i+1);
+    el.innerHTML = '<div contenteditable spellcheck="false"></div>' +
+        '<div class="hex"></div>' +
+        '<div class="rgb"></div>' +
+        '<div class="hsl"></div>' +
+        '<div class="name"></div>';
+
+    document.body.appendChild(el);
+
+    setColor(el);
+    el.addEventListener("click", moveFocus);
+  });
+
+  function setDefaultValue(key, value) {
+    localStorage.setItem(key, localStorage.getItem(key) || value);
+  }
+
+  document.addEventListener("input", function(e) {
+    var el = e.target.parentNode,
+        text = e.target.textContent,
+        color = tinycolor(text),
+        side = el.getAttribute("data-side");
+
+    if (color.isValid()) {
+      localStorage.setItem("color-" + side, text);
+
+      if (!tinycolor.isReadable(color, localStorage.getItem("color-" + side + "-text"))) {
+        console.log("not readable: " + color.getOriginalInput() + "<->" + localStorage.getItem("color-" + side + "-text"));
+        localStorage.setItem("color-" + side + "-text", tinycolor.mostReadable(text, ["#fff","#000"]).toHexString());
+      }
+
+      setColor(el);
+    }
+  });
+
+  document.addEventListener("keyup", function(e) {
+    if (e.keyCode === 27) {
+      setColor(window.leftEl);
+      setColor(window.rightEl);
+    }
+  });
+
+  function moveFocus(e) {
+    var el = e.target.querySelector("[contenteditable]");
+    el && el.focus();
+  }
+
+  function setColor(el) {
+    var side = el.getAttribute("data-side"),
+        color = tinycolor(localStorage.getItem("color-" + side));
+
+    var text = color.getOriginalInput();
+
+    el.style.background = text;
+    el.style.color = localStorage.getItem("color-" + side + "-text");
+    el.querySelector(".hex").textContent = color.toHexString();
+    el.querySelector(".rgb").textContent = color.toRgbString();
+    el.querySelector(".hsl").textContent = color.toHslString();
+    el.querySelector(".name").textContent = color.toName() || "";
+
+    var editor = el.querySelector("[contenteditable]"),
+        currText = editor.textContent;
+
+    if (text !== currText) {
+      editor.textContent = text;
+    }
+
+
+  }
+
+</script>
+<script>
+
+</script>
