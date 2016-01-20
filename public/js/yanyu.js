@@ -187,7 +187,7 @@ var blue = "#008ED6",
     darkGreen = "#182C25",
     lightGreen = "#306844",
     white = "#fff";
-    
+
 var minSize = 20, state = [];
 document.addEventListener("mousemove", function(e) {
   var x = e.pageX*devicePixelRatio,
@@ -209,7 +209,7 @@ console.log("S=" + S);
 var numOfSquares = s / S;
 console.log("num of squares=" + numOfSquares);
 
-var fWidth = 32, fHeight = 55,
+var fWidth = 32, fHeight = 58,
     fLeft = 0, //(numOfSquares-fWidth)/2,
     fTop =  0; //(numOfSquares-fHeight)/2;
 
@@ -223,19 +223,27 @@ for (var i=fLeft+1,ii=fLeft + fWidth;i < ii; i++) {
 }
 
 // horizontal rules
-Shapes.line.add({ x1: fLeft*S, x2: (fLeft + fWidth)*S, y1: (fTop + 21)*S, y2: (fTop + 21)*S, color: "brown", lineWidth: 2 });
-Shapes.line.add({ x1: fLeft*S, x2: (fLeft + fWidth)*S, y1: (fTop + 39)*S, y2: (fTop + 39)*S, color: "brown", lineWidth: 2 });
+Shapes.line.add({ x1: fLeft*S, x2: (fLeft + fWidth)*S, y1: (fTop + 22)*S, y2: (fTop + 22)*S, color: "brown", lineWidth: 2 });
+Shapes.line.add({ x1: fLeft*S, x2: (fLeft + fWidth)*S, y1: (fTop + 41)*S, y2: (fTop + 41)*S, color: "brown", lineWidth: 2 });
 
+// upper part
+var strip1top = 2,
+    stripHeight = 4,
+    strip1bottom = strip1top + stripHeight,
+    strip2top = strip1bottom + 1,
+    strip2bottom = strip2top + stripHeight,
+    strip3top = strip2bottom + 1,
+    strip3bottom = strip3top + stripHeight;
 
-Frame.fill({ top: 0, left: 0, height: 21, color: blue });
-Frame.fill({ top: 0, left: 4, height: 13.5, color: blue });
-Frame.fill({ top: 14.5, left: 4, height: 6.5, color: blue });
-Frame.fill({ top: 0, left: 8, height: 21, color: blue });
-Frame.fill({ top: 0, left: 12, height: 21, color: blue });
-Frame.fill({ top: 0, left: 16, height: 21, color: blue });
-Frame.fill({ top: 0, left: 20, height: 21, color: blue });
-Frame.fill({ top: 0, left: 24, height: 21, color: blue });
-Frame.fill({ top: 0, left: 28, height: 21, color: blue });
+Frame.fill({ top: 0, left: 0, height: 22, color: blue });
+Frame.fill({ top: 0, left: 4, height: 14.5, color: blue });
+Frame.fill({ top: 15.5, left: 4, height: 6.5, color: blue });
+Frame.fill({ top: 0, left: 8, height: 22, color: blue });
+Frame.fill({ top: 0, left: 12, height: 22, color: blue });
+Frame.fill({ top: 0, left: 16, height: 22, color: blue });
+Frame.fill({ top: 0, left: 20, height: 22, color: blue });
+Frame.fill({ top: 0, left: 24, height: 22, color: blue });
+Frame.fill({ top: 0, left: 28, height: 22, color: blue });
 Frame.quad({ topLeft: [1,0], topRight: [2,0], bottomRight: [2,0.5], bottomLeft: [1, 0.2], color: red });
 Frame.quad({ topLeft: [5,0], topRight: [6,0], bottomRight: [6,1], bottomLeft: [5,0.5], color: red });
 Frame.quad({ topLeft: [9,0], topRight: [10,0], bottomRight: [10,1.5], bottomLeft: [9,1], color: red });
@@ -244,87 +252,90 @@ Frame.quad({ topLeft: [17,0], topRight: [18,0], bottomRight: [18,2.5], bottomLef
 Frame.quad({ topLeft: [21,0], topRight: [22,0], bottomRight: [22,3], bottomLeft: [21,2.5], color: red });
 Frame.quad({ topLeft: [25,0], topRight: [26,0], bottomRight: [26,3.5], bottomLeft: [25,3], color: red });
 Frame.quad({ topLeft: [29,0], topRight: [30,0], bottomRight: [30,4], bottomLeft: [29,3.5], color: red });
-Frame.fill({ top: 18.5, left: 2, height: 2.5, color: red });
-Frame.fill({ top: 18.5, left: 6, height: 2.5, color: red });
-Frame.fill({ top: 18.5, left: 10, height: 2.5, color: red });
-Frame.fill({ top: 18.5, left: 14, height: 2.5, color: red });
-Frame.fill({ top: 18.5, left: 18, height: 2.5, color: darkGreen });
-Frame.fill({ top: 18.5, left: 22, height: 2.5, color: darkGreen });
-Frame.fill({ top: 18.5, left: 26, height: 2.5, color: darkGreen });
-Frame.fill({ top: 18.5, left: 30, height: 2.5, color: darkGreen });
-Frame.fill({ top: 19, left: 3, height: 2, color: lightGreen });
-Frame.fill({ top: 19, left: 7, height: 2, color: lightGreen });
-Frame.fill({ top: 19, left: 11, height: 2, color: lightGreen });
-Frame.fill({ top: 2, left: 1, height: 3, color: red });
-Frame.quad({ topLeft: [1,12.5], topRight: [2,11], bottomRight: [2,14], bottomLeft: [1,12.5], color: pink });
-Frame.fill({ top: 11, left: 2, height: 3, color: blue });
-Frame.quad({ topLeft: [5,10], topRight: [6,8.5], bottomRight: [6,18.5], bottomLeft: [5,16.5], color: pink });
-Frame.quad({ topLeft: [6,11], topRight: [7,11], bottomRight: [6,14], bottomLeft: [6,11], color: darkGreen });
-Frame.fill({ top: 11, left: 9, height: 10, color: pink });
-Frame.quad({ topLeft: [9,7.5], topRight: [10,6], bottomRight: [10,9], bottomLeft: [9,9], color: pink });
-Frame.fill({ top: 2, height: 3, left: 10, color: yellow });
-Frame.fill({ top: 6.5, height: 3, left: 10, color: darkGreen });
-Frame.fill({ top: 6.5, height: 3, left: 11, color: red });
-Frame.fill({ top: 6.5, height: 1, left: 13, color: turquise });
-Frame.arc({ top: 2, right: 3, height: 3, color: red });
-Frame.fill({ top: 6, left: 2, height: 4, color: red });
-Frame.arc({ top: 6, right: 3, height: 4, color: white });
-Frame.arc({ top: 2, left: 6, height: 3, color: red });
-Frame.fill({ top: 6, left: 6, height: 4, color: red });
-Frame.arc({ top: 6, left: 6, height: 4, color: white });
-Frame.arc({ top: 2, right: 12, height: 3, color: red });
-Frame.arc({ top: 6.5, right: 12, height: 3, color: lightGreen });
-Frame.arc({ top: 11, right: 11, height: 3, color: red });
-Frame.arc({ top: 11, right: 12, height: 3, color: pink });
-Frame.quad({ topLeft: [13,5.5], topRight: [14,4.5], bottomRight: [14,6.5], bottomLeft: [13,6.5], color: pink });
-Frame.quad({ topLeft: [13,13], topRight: [14,13], bottomRight: [14,19], bottomLeft: [13,21], color: pink });
-Frame.fill({ top: 2, left: 14, height: 3, color: red });
-Frame.quad({ topLeft: [14,8], topRight: [15,6.5], bottomRight: [15,9.5], bottomLeft: [14,8], color: blue });
-Frame.quad({ topLeft: [14,11], topRight: [15,11], bottomRight: [15,14], bottomLeft: [14,11], color: yellow });
-Frame.arc({ top: 2, left: 15, height: 3, color: red });
-Frame.fill({ top: 6.5, left: 15, height: 3, color: red });
-Frame.arc({ top: 6.5, left: 15, height: 3, color: lightGreen });
-Frame.arc({ top: 11, left: 15, height: 3, color: pink });
-Frame.fill({ top: 4, left: 16, height: 7, width: 0.4, color: turquise });
-Frame.fill({ top: 4, left: 16.4, height: 7, width: 0.6, color: red });
-Frame.quad({ topLeft: [17,4], topRight: [18,2.5], bottomRight: [18,7], bottomLeft: [17,7], color: pink });
-Frame.fill({ top: 7, left: 17, height: 1, color: turquise });
-Frame.quad({ topLeft: [17,9.5], topRight: [18,9.5], bottomRight: [18,17], bottomLeft: [17,19], color: pink });
-Frame.quad({ topLeft: [18,2], topRight: [19,2], bottomRight: [19,2], bottomLeft: [18,6], color: red });
-Frame.fill({ top: 6.5, left: 18, height: 3, color: darkGreen });
-Frame.fill({ top: 11, left: 18, height: 3, color: red });
-Frame.arc({ top: 2, right: 20, height: 3, color: yellow });
-Frame.fill({ top: 6.5, left: 19, height: 3, color: turquise });
-Frame.arc({ top: 6.5, right: 20, height: 3, color: white });
-Frame.arc({ top: 11, right: 20, height: 3, color: darkGreen });
-Frame.quad({ topLeft: [19,21], topRight: [20,20.5], bottomRight: [20,21], bottomLeft: [19,21], color: turquise });
+Frame.fill({ top: 19.5, left: 2, height: 2.5, color: red });
+Frame.fill({ top: 19.5, left: 6, height: 2.5, color: red });
+Frame.fill({ top: 19.5, left: 10, height: 2.5, color: red });
+Frame.fill({ top: 19.5, left: 14, height: 2.5, color: red });
+Frame.fill({ top: 19.5, left: 18, height: 2.5, color: darkGreen });
+Frame.fill({ top: 19.5, left: 22, height: 2.5, color: darkGreen });
+Frame.fill({ top: 19.5, left: 26, height: 2.5, color: darkGreen });
+Frame.fill({ top: 19.5, left: 30, height: 2.5, color: darkGreen });
+Frame.fill({ top: 20, left: 3, height: 2, color: lightGreen });
+Frame.fill({ top: 20, left: 7, height: 2, color: lightGreen });
+Frame.fill({ top: 20, left: 11, height: 2, color: lightGreen });
+Frame.fill({ top: strip1top, left: 1, height: stripHeight, color: red });
+Frame.quad({ topLeft: [1,strip3top+2], topRight: [2,strip3top], bottomRight: [2,strip3bottom], bottomLeft: [1,strip3top+2], color: pink });
+Frame.fill({ top: strip3top, left: 2, height: stripHeight, color: blue });
+Frame.quad({ topLeft: [5,strip2bottom], topRight: [6,strip2bottom-2], bottomRight: [6,19.5], bottomLeft: [5,17.5], color: pink });
+Frame.quad({ topLeft: [6,strip3top], topRight: [7,strip3top], bottomRight: [6,strip3bottom], bottomLeft: [6,strip3bottom], color: darkGreen });
+Frame.fill({ top: strip3top, left: 9, height: 10, color: pink });
+Frame.quad({ topLeft: [9,8.5], topRight: [10,6.7], bottomRight: [10,10], bottomLeft: [9,10], color: pink });
+Frame.fill({ top: strip1top, height: stripHeight, left: 10, color: yellow });
+Frame.fill({ top: strip2top, height: stripHeight, left: 10, color: darkGreen });
+Frame.fill({ top: strip2top, height: stripHeight, left: 11, color: red });
+Frame.fill({ top: strip2top+0.5, height: 1.5, left: 13, color: turquise });
+Frame.arc({ top: strip1top, right: 3, height: stripHeight, color: red });
+Frame.fill({ top: strip2top, left: 2, height: stripHeight, color: red });
+Frame.arc({ top: strip2top, right: 3, height: stripHeight, color: white });
+Frame.arc({ top: strip1top, left: 6, height: stripHeight, color: red });
+Frame.fill({ top: strip2top, left: 6, height: stripHeight, color: red });
+Frame.arc({ top: strip2top, left: 6, height: stripHeight, color: white });
+Frame.arc({ top: strip1top, right: 12, height: stripHeight, color: red });
+// Frame.arc({ top: 6.5, right: 12, height: 3, color: lightGreen });
+Frame.arc({ top: strip3top, right: 11, height: stripHeight, color: red });
+Frame.arc({ top: strip3top, right: 12, height: stripHeight, color: pink });
+Frame.quad({ topLeft: [13,6.5], topRight: [14,5.5], bottomRight: [14,7.5], bottomLeft: [13,7.5], color: pink });
+Frame.quad({ topLeft: [13,14], topRight: [14,14], bottomRight: [14,20], bottomLeft: [13,22], color: pink });
+Frame.fill({ top: strip1top, left: 14, height: stripHeight, color: red });
+Frame.quad({ topLeft: [14,strip2top+2], topRight: [15,strip2top], bottomRight: [15,strip2bottom], bottomLeft: [14,strip2top+2], color: blue });
+Frame.quad({ topLeft: [14,strip3top], topRight: [15,strip3top], bottomRight: [15,strip3bottom], bottomLeft: [15, strip3bottom], color: yellow });
+Frame.arc({ top: strip1top, left: 15, height: stripHeight, color: red });
+Frame.fill({ top: strip2top, left: 15, height: stripHeight, color: red });
+Frame.arc({ top: strip2top, left: 15, height: stripHeight, color: lightGreen });
+Frame.arc({ top: strip3top, left: 15, height: stripHeight, color: pink });
+Frame.fill({ top: 4.5, left: 16, height: 7.5, width: 0.4, color: turquise });
+Frame.fill({ top: 4.5, left: 16.4, height: 7.5, width: 0.6, color: red });
+Frame.quad({ topLeft: [17,4], topRight: [18,2.5], bottomRight: [18,7.5], bottomLeft: [17,7.5], color: pink });
+Frame.fill({ top: 7.5, left: 17, height: 1.5, color: turquise });
+Frame.quad({ topLeft: [17,11], topRight: [18,11], bottomRight: [18,17], bottomLeft: [17,19], color: pink });
+Frame.quad({ topLeft: [18,strip1top], topRight: [19,strip1top], bottomRight: [19,strip1top], bottomLeft: [18,strip1bottom], color: red });
+Frame.fill({ top: strip2top, left: 18, height: stripHeight, color: darkGreen });
+Frame.fill({ top: strip3top, left: 18, height: stripHeight, color: red });
+Frame.arc({ top: strip1top, right: 20, height: stripHeight, color: yellow });
+Frame.fill({ top: strip2top, left: 19, height: stripHeight, color: turquise });
+Frame.arc({ top: strip2top, right: 20, height: stripHeight, color: white });
+Frame.arc({ top: strip3top, right: 20, height: stripHeight, color: darkGreen });
+Frame.quad({ topLeft: [19,22], topRight: [20,21.5], bottomRight: [20,22], bottomLeft: [19,22], color: turquise });
 Frame.quad({ topLeft: [20,4], topRight: [21,5], bottomRight: [21,13.5], bottomLeft: [20,14], color: red });
-Frame.quad({ topLeft: [21,2.5], topRight: [22,3.5], bottomRight: [22,7], bottomLeft: [21,7], color: pink });
-Frame.fill({ top: 7, left: 21, height: 1, color: turquise });
-Frame.quad({ topLeft: [21,12.5], topRight: [22,12.5], bottomRight: [22,12.5], bottomLeft: [21,14], color: pink });
-Frame.quad({ topLeft: [22,3], topRight: [23,5], bottomRight: [23,5], bottomLeft: [22,5], color: darkGreen });
-Frame.quad({ topLeft: [22,6.5], topRight: [23,6.5], bottomRight: [23,6.5], bottomLeft: [22,8], color: red });
-Frame.quad({ topLeft: [22,8], topRight: [23,9.5], bottomRight: [23,9.5], bottomLeft: [22,9.5], color: red });
-Frame.quad({ topLeft: [22,12.5], topRight: [23,11], bottomRight: [23,14], bottomLeft: [22,12.5], color: pink });
-Frame.arc({ top: 2, left: 23, height: 3, color: yellow });
-Frame.fill({ top: 6.5, left: 23, height: 3, color: turquise });
-Frame.arc({ top: 6.5, left: 23, height: 3, color: white });
-Frame.arc({ top: 11, left: 23, height: 3, color: darkGreen });
-Frame.quad({ topLeft: [23,20.5], topRight: [24,20], bottomRight: [24,21], bottomLeft: [23,21], color: turquise });
-Frame.quad({ topLeft: [25,4], topRight: [26,5], bottomRight: [26,9.5], bottomLeft: [25,11.5], color: pink });
-Frame.arc({ top: 2, left: 26, height: 3, color: turquise });
-Frame.fill({ top: 6.5, left: 26, height: 3, color: red });
-Frame.arc({ top: 11, left: 26, height: 3, color: darkGreen });
-Frame.arc({ top: 2, right: 28, height: 3, color: lightGreen });
-Frame.fill({ top: 6.5, left: 27, height: 3, color: darkGreen });
-Frame.arc({ top: 6.5, right: 28, height: 3, color: white });
-Frame.arc({ top: 11, right: 28, height: 3, color: red });
-Frame.quad({ topLeft: [27,20], topRight: [28,19.5], bottomRight: [28,21], bottomLeft: [27,21], color: turquise });
-Frame.quad({ topLeft: [29,6.5], topRight: [30,8], bottomRight: [30,8], bottomLeft: [29,9.5], color: pink });
-Frame.arc({ top: 2, right: 31, height: 3, color: turquise });
-Frame.arc({ top: 2, left: 31, height: 3, color: lightGreen });
-Frame.fill({ top: 11, left: 30, height: 3, color: turquise });
-Frame.arc({ top: 11, left: 31, height: 3, color: red });
-Frame.fill({ top: 6.5, left: 31, height: 3, color: darkGreen });
-Frame.arc({ top: 6.5, left: 31, height: 3, color: white });
-Frame.arc({ top: 10.5, right: 29, height: 10.5, width: 0.8, color: white });
+Frame.quad({ topLeft: [21,2.5], topRight: [22,3.5], bottomRight: [22,7.5], bottomLeft: [21,7.5], color: pink });
+Frame.fill({ top: 7.5, left: 21, height: 1.5, color: turquise });
+Frame.quad({ topLeft: [21,strip3top+2], topRight: [22,strip3top+2], bottomRight: [22,strip3top+2], bottomLeft: [21,strip3bottom], color: pink });
+Frame.quad({ topLeft: [22,3], topRight: [23,6], bottomRight: [23,6], bottomLeft: [22,6], color: darkGreen });
+Frame.quad({ topLeft: [22,strip2top], topRight: [23,strip2top], bottomRight: [23,strip2top], bottomLeft: [22,strip2top+2], color: red });
+Frame.quad({ topLeft: [22,strip2top+2], topRight: [23,strip2bottom], bottomRight: [23,strip2bottom], bottomLeft: [22,strip2bottom], color: red });
+Frame.quad({ topLeft: [22,strip3top+2], topRight: [23,strip3top], bottomRight: [23,strip3bottom], bottomLeft: [22,strip3top+2], color: pink });
+Frame.arc({ top: strip1top, left: 23, height: stripHeight, color: yellow });
+Frame.fill({ top: strip2top, left: 23, height: stripHeight, color: turquise });
+Frame.arc({ top: strip2top, left: 23, height: stripHeight, color: white });
+Frame.arc({ top: strip3top, left: 23, height: stripHeight, color: darkGreen });
+Frame.quad({ topLeft: [23,21.5], topRight: [24,21], bottomRight: [24,22], bottomLeft: [23,22], color: turquise });
+Frame.quad({ topLeft: [25,5], topRight: [26,6], bottomRight: [26,strip2bottom], bottomLeft: [25,strip2bottom+2], color: pink });
+Frame.arc({ top: strip1top, left: 26, height: stripHeight, color: turquise });
+Frame.fill({ top: strip2top, left: 26, height: stripHeight, color: red });
+Frame.arc({ top: strip3top, left: 26, height: stripHeight, color: darkGreen });
+Frame.arc({ top: strip1top, right: 28, height: stripHeight, color: lightGreen });
+Frame.fill({ top: strip2top, left: 27, height: stripHeight, color: darkGreen });
+Frame.arc({ top: strip2top, right: 28, height: stripHeight, color: white });
+Frame.arc({ top: strip3top, right: 28, height: stripHeight, color: red });
+Frame.quad({ topLeft: [27,21], topRight: [28,20.5], bottomRight: [28,22], bottomLeft: [27,22], color: turquise });
+Frame.quad({ topLeft: [29,strip2top], topRight: [30,strip2top+2], bottomRight: [30,strip2top+2], bottomLeft: [29,strip2bottom], color: pink });
+Frame.arc({ top: strip1top, right: 31, height: stripHeight, color: turquise });
+Frame.arc({ top: strip1top, left: 31, height: stripHeight, color: lightGreen });
+Frame.fill({ top: strip3top, left: 30, height: stripHeight, color: turquise });
+Frame.arc({ top: strip3top, left: 31, height: stripHeight, color: red });
+Frame.fill({ top: strip2top, left: 31, height: stripHeight, color: darkGreen });
+Frame.arc({ top: strip2top, left: 31, height: stripHeight, color: white });
+Frame.arc({ top: 10.5, right: 29, height: 11.5, width: 0.8, color: white });
+Frame.arc({ top: strip2top+1, left: 24, height: stripHeight, width: 0.6, color: red });
+Frame.arc({ top: strip2top, right: 9, height: 7, width: 0.6, color: turquise });
+Frame.quad({ topLeft: [12, strip1bottom], topRight: [13, strip1bottom-0.5], bottomRight: [13, strip3bottom-1], bottomLeft: [12, strip3bottom-1.5], color: turquise });
