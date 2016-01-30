@@ -7,13 +7,31 @@ permalink: /yanyu/
   html, body { margin: 0; height: 100%; background: #f7f7f7; }
   canvas {
     display: block;
-    background: white; 
+    z-index: 1;
+    position: relative;
+    /*background: white; */
   }
   body {
-    background: url(/public/78166.jpg) no-repeat right -170px top -160px;
-    background-size: auto 140%;
-    background-position: -185px -163px;
-    background-size: 735px;
+    /*background: url(/public/78166.jpg) no-repeat right -170px top -160px;*/
+    /*background-size: auto 140%;*/
+    /*background-position: -185px -163px;*/
+    /*background-size: 735px;*/
+  }
+  #pict {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url(/public/78166.jpg) no-repeat 450px -700px;
+    background-size: 1300px;
+  }
+
+  #form {
+      position: absolute;
+      top: 0;
+      z-index: 1;
+      width: 150px;
   }
 
   @keyframes panorama {
@@ -28,4 +46,50 @@ permalink: /yanyu/
   }
 </style>
 <canvas></canvas>
+<div id="pict"></div>
+<div id="form">
+  <input type="number" id="pictleft"/>
+  <input type="number" id="picttop"/>
+  <input type="number" id="pictsize"/>
+  <input type="number" id="pictrotate"/>
+  <input type="checkbox" id="canvasopacity"/>
+</div>
+
 <script src="/public/js/yanyu.js"></script>
+<script>
+  var canvas = document.getElementsByTagName("canvas")[0];
+  console.log(canvas.style.width + " " + canvas.style.height);
+  form.style.left = (Number(canvas.style.width.replace("px", "")) - 150) + "px";
+  document.addEventListener("mousemove", function(e) {
+    var x = e.pageX*devicePixelRatio,
+        y = e.pageY*devicePixelRatio;
+
+    x = x - (x % S);
+    y = y - (y % S);
+
+    state.splice(0, 2, { type: "circle", center: [x,y], radius: 3, color: "red" }, { type: "text", text: x/S + "x" + y/S, x: 930, y: 30, color: "black", font: "36px 'PT Sans'" });
+  });
+  Shapes.circle.add({ center: [0,0], radius: 3, color: "red" }, true);
+  Shapes.text.add({ text: "amit", x:930, y: 30, font: "36px 'PT Sans'", color: "black" }, true);
+
+function initField(field, prop) {
+  field.addEventListener("input", function(e) {
+    pict.style[prop] = e.target.value + "px";
+  });
+  field.value = getComputedStyle(pict)[prop].replace("px", "");
+}
+
+initField(pictleft, "backgroundPositionX");
+initField(picttop, "backgroundPositionY");
+initField(pictsize, "backgroundSize");
+
+pictrotate.addEventListener("input", function(e) {
+  pict.style.transform = "rotate(" + e.target.value/10 +"deg)";
+});
+
+canvasopacity.addEventListener("change", function(e) {
+  canvas.style.opacity = e.target.checked ? 0.3 : 1;
+});
+
+
+</script>
