@@ -1,5 +1,5 @@
 var canvas = document.getElementsByTagName("canvas")[0],
-    c = canvas.getContext("2d"), s, S;
+    c = canvas.getContext("2d"), s, S, w = innerWidth, h = innerHeight;
 
 // var audio = new Audio("/public/Gary Jules - Mad World.mp3");
 // audio.onprogress = function(e) { console.log(e.timeStamp); }
@@ -12,19 +12,23 @@ function play() {
 }
 
 function positionCanvas() {
-  s = Math.min(innerHeight, innerWidth);
+  // s = Math.min(innerHeight, innerWidth);
   // s = s - (s % 100);
   // s = 800;
-  canvas.style.height = canvas.style.width = s + "px";
-  s = s * devicePixelRatio;
-  canvas.setAttribute("width", s);
-  canvas.setAttribute("height", s);
+  canvas.style.height = h + "px";
+  canvas.style.width = w + "px";
+  // s = s * devicePixelRatio;
+  w = w * devicePixelRatio;
+  h = h * devicePixelRatio;
+  canvas.setAttribute("width", w);
+  canvas.setAttribute("height", h);
 }
 
 function drawFunc(func) {
   return function(o) {
     c.strokeStyle = o.color || "black";
     c.lineWidth = o.lineWidth || 1;
+    c.globalAlpha = o.opacity !== undefined ? o.opacity : 1.0;
     func(o);
   }
 }
@@ -35,6 +39,87 @@ function draw() {
     Shapes[shape.type](shape);
   });
   requestAnimationFrame(draw);
+}
+
+function doDrawTimeline() {
+  c.clearRect(0,0,w,h);
+  var times = Object.keys(timeline), currTime = Date.now() - start;
+  for (var i=times.length-1,ii=0;i>=ii;i--) {
+    if (currTime >= times[i]) break;
+  }
+
+  var time = times[i], objects = timeline[time];
+
+  objects.forEach(function(obj) {
+    if (obj.animation) {
+      Object.keys(obj.animation).forEach(function(prop) {
+        obj[prop] = interpolate(prop, currTime, obj.animation[prop].from, obj.animation[prop].until, obj.animation[prop].toValue, obj.animation[prop].fromValue);
+      });
+    }
+    Shapes[obj.type](obj);
+  });
+  requestAnimationFrame(doDrawTimeline);
+}
+
+function drawTimeline() {
+  start = Date.now();
+  doDrawTimeline();
+}
+
+function compileAnimation(timeline) {
+  var objects = {};
+  Object.keys(timeline).forEach(function(time, i) {
+    timeline[time].forEach(function(obj) {
+      var existingAnimation = objects[obj.id] && objects[obj.id].animation;
+      objects[obj.id] = extend(obj, objects[obj.id]);
+      if (existingAnimation) {
+        Object.keys(existingAnimation).forEach(function(prop) {
+          if (existingAnimation[prop].until >= time) {
+            obj[prop] = interpolate(prop, time, existingAnimation[prop].from, existingAnimation[prop].until, existingAnimation[prop].toValue, existingAnimation[prop].fromValue);
+          }
+        });
+      }
+
+      animatedProps.forEach(function(prop) {
+        var next = findNext(obj, i, prop);
+        if (next) {
+          obj.animation = obj.animation || {};
+          obj.animation[prop] = { toValue: next[0], fromValue: obj[prop], until: next[1], from: time };
+        }
+      });
+    })
+  });
+}
+
+function findNext(obj, index, prop) {
+  var candidate, nextTimes = Object.keys(timeline).slice(index+1);
+  for (var i=0,ii=nextTimes.length;i<ii;i++) {
+    candidate = timeline[nextTimes[i]].find(function(x) { return x.id === obj.id; });
+    if (candidate && candidate[prop] !== undefined) {
+      if (candidate[prop] !== obj[prop]) return [candidate[prop], nextTimes[i]];
+      else return;
+    }
+  }
+}
+
+function interpolate(prop, point, start, end, toValue, fromValue) {
+  var rel = (point - start) / (end - start);
+
+  if (prop === "color") {
+    return chroma.mix(fromValue, toValue, rel).hex();
+  }
+
+  return fromValue + (toValue - fromValue) * rel;
+}
+
+function extend(target, source) {
+  if (typeof source !== "object") return target;
+  Object.keys(source).forEach(function(prop) {
+    if (prop !== "animation" && !target.hasOwnProperty(prop)) {
+      target[prop] = source[prop];
+    }
+  });
+  return target;
 }
 
 Shapes = {
@@ -89,6 +174,7 @@ Shapes = {
     c.lineTo(left, top + height);
     c.closePath();
     c.fillStyle = color;
+    c.globalAlpha = o.opacity !== undefined ? o.opacity : 1.0;
     c.fill();
   },
 
@@ -100,6 +186,7 @@ Shapes = {
     }
     c.closePath();
     c.fillStyle = o.color;
+    c.globalAlpha = o.opacity !== undefined ? o.opacity : 1.0;
     c.fill();
   },
 
@@ -108,6 +195,7 @@ Shapes = {
     // c.moveTo(o.center[0], o.center[1]);
     c.arc(o.center[0], o.center[1], o.radius, 0, 2*Math.PI);
     c.fillStyle = o.color;
+    c.globalAlpha = o.opacity !== undefined ? o.opacity : 1.0;
     c.fill();
   },
 
@@ -115,12 +203,14 @@ Shapes = {
     c.beginPath();
     c.arc(o.center[0], o.center[1], o.radius, o.a1, o.a2, o.antiClockwise);
     c.closePath();
+    c.globalAlpha = o.opacity !== undefined ? o.opacity : 1.0;
     c.fillStyle = o.color;
     c.fill();
   },
 
   text: function(o) {
     c.fillStyle = o.color;
+    c.globalAlpha = o.opacity !== undefined ? o.opacity : 1.0;
     c.font = o.font;
     c.fillText(o.text, o.x, o.y);
   }
@@ -191,13 +281,38 @@ var blue = "#008ED6",
     turquise = "#419873",
     darkGreen = "#182C25",
     lightGreen = "#306844",
-    white = "#fff";
+    white = "#fff",
+    black = "#000";
 
 var minSize = 20, state = [];
 
 positionCanvas();
-Shapes.deepPlus.add({ top: 0, left: 0, width: s, height: s, minSize: minSize, color: "#ccc" });
-draw();
+
+
+
+var timeline = {
+  0: [
+    { id: 0, type: "fill", top: 0, left: 0, width: w, height: h, color: black, opacity: 1 },
+    { id: 1, type: "text", text: "In memory of my grandpa, \"Saba Yanyu\"", color: white, x: 100, y: 100, font: "36px 'PT Sans'"}
+  ],
+
+  2000: [
+    { id: 0, color: black },
+    { id: 1, color: white }
+  ],
+
+  3000: [
+    { id: 0, color: white },
+    { id: 1, color: black }
+  ]
+}, start, animatedProps = ["left", "top", "width", "height", "color", "opacity"];
+
+compileAnimation(timeline);
+// drawTimeline();
+
+
+// Shapes.deepPlus.add({ top: 0, left: 0, width: s, height: s, minSize: minSize, color: "#ccc" });
+// draw();
 
 console.log("S=" + S);
 var numOfSquares = s / S;
