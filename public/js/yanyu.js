@@ -274,6 +274,85 @@ var Frame = {
   }
 }
 
+var idCounter = 0;
+var Timeline = {
+
+  getPropAt: function(id, prop, time) {
+    var times = Object.keys(timeline), objects;
+    for (var i=times.length-1,ii=0;i>=ii;i--) {
+      if (times[i] <= time) {
+        var existing = timeline[times[i]].find(function(x) { return x.id === id; });
+        if (existing && existing[prop] !== undefined) return existing[prop];
+      }
+    }
+  },
+
+  getObjAt: function(obj, time) {
+    var startProps = {};
+    Object.keys(obj).forEach(function(prop) {
+      startProps[prop] = Timeline.getPropAt(obj.id, prop, time);
+    });
+    return Object.assign({ id: obj.id }, startProps);
+  },
+
+  setObjAt: function(obj, at) {
+    var timeObj = timeline[at] || Timeline.newTime(at);
+    var existing = timeObj.find(function(x) { return x.id === obj.id; });
+    if (!existing) {
+      timeObj.push(obj);
+    } else {
+      extend(existing, obj);
+    }
+  },
+
+  newTime: function(time) {
+    var times = Object.keys(timeline), objects;
+    for (var i=times.length-1,ii=0;i>=ii;i--) {
+      if (times[i] < time) {
+        objects = timeline[times[i]].map(function(objInTime) { return { id: objInTime.id }; });
+        break;
+      }
+    }
+    return timeline[time] = (objects || []);
+  },
+
+  add: function(time, obj, animation) {
+    obj = Object.assign({ id: idCounter }, obj);
+    if (timeline[time]) {
+      timeline[time].push(obj);
+    } else {
+      Timeline.newTime(time).push(obj);
+    }
+
+    Object.keys(timeline).forEach(function(t) {
+      if (t > time) timeline[t].push({ id: obj.id });
+    });
+
+    if (animation) {
+      Timeline.animate(Object.assign({ id: idCounter, at: time }, animation));
+    }
+
+    return idCounter++;
+  },
+
+  animate: function(obj) {
+    var at = obj.at, duration = obj.duration;
+    delete obj.at;
+    delete obj.duration;
+
+    Timeline.setObjAt(Timeline.getObjAt(obj, at), at);
+    Timeline.setObjAt(obj, at+duration);
+  },
+
+  remove: function(id, time) {
+    Object.keys(timeline).forEach(function(t) {
+      if (t >= time) {
+        var index = timeline[t].findIndex(function(obj) { return obj.id === id; });
+        if (index > -1) timeline[t].splice(index, 1)
+      }
+    });
+  }
+};
 var blue = "#008ED6",
     red = "#E2062C",
     yellow = "#FFE135",
@@ -290,22 +369,47 @@ positionCanvas();
 
 
 
-var timeline = {
-  0: [
-    { id: 0, type: "fill", top: 0, left: 0, width: w, height: h, color: black, opacity: 1 },
-    { id: 1, type: "text", text: "In memory of my grandpa, \"Saba Yanyu\"", color: white, x: 100, y: 100, font: "36px 'PT Sans'"}
-  ],
 
-  2000: [
-    { id: 0, color: black },
-    { id: 1, color: white }
-  ],
+// var timeline = {
+//   0: [
+//     { id: 0, type: "fill", top: 0, left: 0, width: w, height: h, color: black, opacity: 1 },
+//     { id: 1, type: "text", text: "In memory of my grandpa, \"Saba Yanyu\"", color: white, x: w/2-200, y: h/2, font: "36px 'PT Sans'" }
+//   ],
+//
+//   2000: [
+//     { id: 0, color: black },
+//     { id: 1 }
+//   ],
+//
+//   3000: [
+//     { id: 0, color: white },
+//     { id: 2, type: "line", x1: w/2, y1: 0, x2: w/2, y2: 0, color: black }
+//   ],
+//
+//   4000: [
+//     { id: 2, y2: h },
+//     { id: 3, type: "line", x1: 0, y1: h/2, x2: 0, y2: h/2, color: black }
+//   ],
+//
+//   5000: [
+//     { id: 2 },
+//     { id: 3, x2: w }
+//   ]
+// };
+var timeline = {};
+var start, animatedProps = ["left", "top", "width", "height", "color", "opacity", "x1", "x2", "y1", "y2"];
 
-  3000: [
-    { id: 0, color: white },
-    { id: 1, color: black }
-  ]
-}, start, animatedProps = ["left", "top", "width", "height", "color", "opacity"];
+var rectId = Timeline.add(0, { type: "fill", top: 0, left: 0, width: w, height: h, color: black, opacity: 1 });
+Timeline.animate({ id: rectId, at: 2000, duration: 1000, color: white });
+var textId = Timeline.add(0, { type: "text", text: "In memory of my grandpa, \"Saba Yanyu\"", color: white, x: w/2-200, y: h/2, font: "36px 'PT Sans'" });
+Timeline.add(3000, { type: "line", x1: w/2, y1: 0, x2: w/2, y2: 0, color: black }, { duration: 1000, y2: h });
+Timeline.add(4000, { type: "line", x1: 0, y1: h/2, x2: 0, y2: h/2, color: black }, { duration: 1000, x2: w });
+Timeline.add(5000, { type: "line", x1: w/2 - 100, y1: 0, x2: w/2 - 100, y2: 0, color: black }, { duration: 500, y2: h });
+
+
+
+Timeline.remove(textId, 3000);
+Timeline.remove(rectId, 3001);
 
 compileAnimation(timeline);
 // drawTimeline();
