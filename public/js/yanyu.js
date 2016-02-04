@@ -43,7 +43,7 @@ function draw() {
 
 function doDrawTimeline() {
   c.clearRect(0,0,w,h);
-  var times = Object.keys(timeline), currTime = Date.now() - start;
+  var times = Object.keys(timeline), currTime = Date.now()+3000 - start;
   for (var i=times.length-1,ii=0;i>=ii;i--) {
     if (currTime >= times[i]) break;
   }
@@ -396,15 +396,66 @@ positionCanvas();
 //     { id: 3, x2: w }
 //   ]
 // };
+
+function addGridLine(options) {
+  if (options.vertical) {
+    Timeline.add(options.at, { type: "line", x1: options.x, y1: frameTop, x2: options.x, y2: frameTop, color: options.color }, { duration: options.duration, y2: frameBottom });
+  } else {
+    Timeline.add(options.at, { type: "line", x1: frameLeft, y1: options.y, x2: frameLeft, y2: options.y, color: options.color }, { duration: options.duration, x2: frameRight });
+  }
+}
+
+function addPlus(x,y,w,h,color,time,duration) {
+  Timeline.add(time, { type: "line", x1: x, y1: y-h/2, x2: x, y2: y-h/2, color: color }, { duration: duration, y2: y+h/2 });
+  Timeline.add(time+duration, { type: "line", x1: x-w/2, y1: y, x2: x-w/2, y2: y, color: color }, { duration: duration, x2: x+w/2 });
+}
+
 var timeline = {};
 var start, animatedProps = ["left", "top", "width", "height", "color", "opacity", "x1", "x2", "y1", "y2"];
 
 var rectId = Timeline.add(0, { type: "fill", top: 0, left: 0, width: w, height: h, color: black, opacity: 1 });
 Timeline.animate({ id: rectId, at: 2000, duration: 1000, color: white });
 var textId = Timeline.add(0, { type: "text", text: "In memory of my grandpa, \"Saba Yanyu\"", color: white, x: w/2-200, y: h/2, font: "36px 'PT Sans'" });
-Timeline.add(3000, { type: "line", x1: w/2, y1: 0, x2: w/2, y2: 0, color: black }, { duration: 1000, y2: h });
-Timeline.add(4000, { type: "line", x1: 0, y1: h/2, x2: 0, y2: h/2, color: black }, { duration: 1000, x2: w });
-Timeline.add(5000, { type: "line", x1: w/2 - 100, y1: 0, x2: w/2 - 100, y2: 0, color: black }, { duration: 500, y2: h });
+
+var gridStart = 3000,
+    gridDuration = 1600,
+    squareSize = 25,
+    squareCount = 60,
+    tot = squareSize*squareCount,
+    frameTop = (h - tot)/2,
+    frameBottom = frameTop + tot,
+    frameLeft = (w - tot)/2,
+    frameRight = frameLeft + tot;
+
+addGridLine({ x: frameLeft, color: black, duration : 1, at: 0, vertical: true });
+addGridLine({ x: frameLeft + tot, color: black, duration : 1, at: 0, vertical: true });
+addGridLine({ y: frameTop, color: black, duration : 1, at: 0 });
+addGridLine({ y: frameTop + tot, color: black, duration : 1, at: 0 });
+
+console.time("grid");
+for (var q=1,qq=5;q<=qq;q++) {
+  var q2 = Math.pow(2,q), q21 = Math.pow(2,q-1), duration = gridDuration/q21;
+  for (var e=0,ee=q21;e<ee;e++) {
+    var time = gridStart + gridDuration*2*(q-1) + e*duration;
+    addGridLine({ x: frameLeft + tot/q2+e*tot/q21, color: black, duration: duration, at: time, vertical: true });
+    addGridLine({ y: frameTop + tot/q2+e*tot/q21, color: black, duration: duration, at: time + duration*q21 });
+  }
+}
+console.timeEnd("grid");
+// addGridLine({ x: w/2, color: black, duration: 1000, at: gridStart, vertical: true });
+// addGridLine({ y: h/2, color: black, duration: 1000, at: gridStart + 1000 });
+// addGridLine({ x: w/2-15*squareSize, color: black, duration: 500, at: gridStart+2000, vertical: true });
+// addGridLine({ x: w/2+15*squareSize, color: black, duration: 500, at: gridStart+2500, vertical: true });
+// addGridLine({ y: h/2-15*squareSize, color: black, duration: 500, at: gridStart+3000 });
+// addGridLine({ y: h/2+15*squareSize, color: black, duration: 500, at: gridStart+3500 });
+// addGridLine({ y: h/2+15*squareSize, color: black, duration: 500, at: gridStart+3500, vertical: true });
+
+// addPlus(w/2,h/2,w,h,black,3000,1000);
+// addPlus(w/4,h/4,w/2,h/2,black,5000,500);
+// addPlus(3*w/4,h/4,w/2,h/2,black,5000,500);
+// Timeline.add(3000, { type: "line", x1: w/2, y1: 0, x2: w/2, y2: 0, color: black }, { duration: 1000, y2: h });
+// Timeline.add(4000, { type: "line", x1: 0, y1: h/2, x2: 0, y2: h/2, color: black }, { duration: 1000, x2: w });
+// Timeline.add(5000, { type: "line", x1: w/2 - 100, y1: 0, x2: w/2 - 100, y2: 0, color: black }, { duration: 500, y2: h });
 
 
 
