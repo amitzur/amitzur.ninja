@@ -11,6 +11,17 @@ permalink: /color/
 </style>
 <script src="https://cdn.rawgit.com/bgrins/TinyColor/master/tinycolor.js"></script>
 <script>
+
+  function readFromHash(hash = location.hash.slice(1)) {
+    if (hash) {
+      var hash = hash.split("--").map(x => decodeURIComponent(x));
+      setColorInStorage("left", tinycolor(hash[0]));
+      setColorInStorage("right", tinycolor(hash[1]));
+    }
+  }
+
+  readFromHash();
+
   ["left", "right"].forEach(function(side, i) {
     setDefaultValue("color-" + side, (i === 0 ? "greenyellow" : "yellowgreen"));
     setDefaultValue("color-" + side + "-text", "black");
@@ -30,7 +41,7 @@ permalink: /color/
     setColor(side);
     el.addEventListener("click", moveFocus);
   });
-  
+
   pushToHistory();
 
   function setDefaultValue(key, value) {
@@ -121,6 +132,12 @@ permalink: /color/
 
     if (e.state[0]) setColorInStorage("left", tinycolor(e.state[0]));
     if (e.state[1]) setColorInStorage("right", tinycolor(e.state[1]));
+    setColor("left");
+    setColor("right");
+  });
+
+  window.addEventListener("hashchange", function() {
+    readFromHash();
     setColor("left");
     setColor("right");
   });
