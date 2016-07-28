@@ -124,6 +124,8 @@ permalink: /color/
         currText = editor.textContent;
 
     editor.textContent = text;
+
+    ga('send', 'color', text);
   }
 
   window.addEventListener("popstate", function(e) {
@@ -141,8 +143,5 @@ permalink: /color/
     setColor("left");
     setColor("right");
   });
-
-</script>
-<script>
 
 </script>
