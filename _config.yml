@@ -9,8 +9,8 @@ permalink:        pretty
 title:            Amit Zur
 tagline:          'A personal blog'
 description:      'Pixels, bits and mindfulness'
-url:              http://amitzur.ninja
-baseurl:          /
+url:              http://amitzur.github.io/amitzur.ninja
+baseurl:          http://amitzur.github.io/amitzur.ninja/
 
 author:
   name:           'Amit Zur'
