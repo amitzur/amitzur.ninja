@@ -27,12 +27,24 @@ permalink: /color/
 
     document.body.appendChild(el);
 
-    setColor(el);
+    setColor(side);
     el.addEventListener("click", moveFocus);
   });
+  
+  pushToHistory();
 
   function setDefaultValue(key, value) {
     localStorage.setItem(key, localStorage.getItem(key) || value);
+  }
+
+  function setColorInStorage(side, color) {
+      var text = color.getOriginalInput();
+      localStorage.setItem("color-" + side, text);
+
+      if (!tinycolor.isReadable(color, localStorage.getItem("color-" + side + "-text"))) {
+        console.log("not readable: " + color.getOriginalInput() + "<->" + localStorage.getItem("color-" + side + "-text"));
+        localStorage.setItem("color-" + side + "-text", tinycolor.mostReadable(text, ["#fff","#000"]).toHexString());
+      }
   }
 
   document.addEventListener("input", function(e) {
@@ -42,31 +54,50 @@ permalink: /color/
         side = el.getAttribute("data-side");
 
     if (color.isValid()) {
-      localStorage.setItem("color-" + side, text);
-
-      if (!tinycolor.isReadable(color, localStorage.getItem("color-" + side + "-text"))) {
-        console.log("not readable: " + color.getOriginalInput() + "<->" + localStorage.getItem("color-" + side + "-text"));
-        localStorage.setItem("color-" + side + "-text", tinycolor.mostReadable(text, ["#fff","#000"]).toHexString());
-      }
-
-      setColor(el);
+      setColorInStorage(side, color);
+      setColor(side);
+      
+      pushToHistory();
     }
   });
 
   document.addEventListener("keyup", function(e) {
     if (e.keyCode === 27) {
-      setColor(window.leftEl);
-      setColor(window.rightEl);
+      setColor("left");
+      setColor("right");
     }
   });
+
+  function pushToHistory() {
+    var leftColor = getColor("left"),
+        rightColor = getColor("right"),
+        state = [leftColor, rightColor];
+
+    console.log("pushstate", state);
+
+    history.pushState(state, "some page name", "#" + encodeURIComponent(leftColor) + "--" + encodeURIComponent(rightColor));
+  }
 
   function moveFocus(e) {
     var el = e.target.querySelector("[contenteditable]");
     el && el.focus();
   }
 
-  function setColor(el) {
-    var side = el.getAttribute("data-side"),
+  function getColor(side) {
+    var el = getEditorEl(side);
+    if (el) return el.textContent;
+  }
+
+  function getEl(side) {
+    return document.querySelector("[data-side='" + side + "']");
+  }
+
+  function getEditorEl(side) {
+    return document.querySelector("[data-side='" + side + "'] [contenteditable]");
+  }
+
+  function setColor(side) {
+    var el = getEl(side),
         color = tinycolor(localStorage.getItem("color-" + side));
 
     var text = color.getOriginalInput();
@@ -78,13 +109,21 @@ permalink: /color/
     el.querySelector(".hsl").textContent = color.toHslString();
     el.querySelector(".name").textContent = color.toName() || "";
 
-    var editor = el.querySelector("[contenteditable]"),
+    var editor = getEditorEl(side),
         currText = editor.textContent;
 
     editor.textContent = text;
-
-
   }
+
+  window.addEventListener("popstate", function(e) {
+    console.log("popstate", e.state);
+    if (!e.state) return;
+
+    if (e.state[0]) setColorInStorage("left", tinycolor(e.state[0]));
+    if (e.state[1]) setColorInStorage("right", tinycolor(e.state[1]));
+    setColor("left");
+    setColor("right");
+  });
 
 </script>
 <script>
